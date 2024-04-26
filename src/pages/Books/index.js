@@ -14,9 +14,9 @@ export default function Books() {
                 <img src={bookImg} alt="book" />
                 <span>Bem Vindo, <strong>Ser Humano</strong> </span>
                 <Link className="button" to="/new">ADD NEW BOOK</Link>
-                <button type="button">
+                <Link to="/">
                 <img src={shutdown} alt="book" />
-                </button>
+                </Link>
             </header>
 
             <h1> Rigistre um Livro</h1>

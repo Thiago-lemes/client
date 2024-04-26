@@ -2,6 +2,8 @@ import React from "react";
 import './Login.css'
 import padlock from '../../assets/padlock.png'
 import user from '../../assets/key.png'
+import { Link } from 'react-router-dom'
+
 
 export default function Login() {
     return (
@@ -12,10 +14,8 @@ export default function Login() {
                     <h1>Acesse sua conta</h1>
                     <input placeholder="Username" />
                     <input type="passaword" placeholder="password" />
-                    <button className="button" type="submit">
-                        login
-                    </button>
-
+                    
+                    <Link className="button" to="/Books">ADD NEW BOOK</Link>
                 </form>
             </section>
 
