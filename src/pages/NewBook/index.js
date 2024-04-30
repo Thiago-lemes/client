@@ -1,6 +1,6 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { FiArrowLeft } from 'react-icons/fi'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import newBook from '../../assets/notebook.png'
 
 import './style.css'
@@ -10,12 +10,15 @@ import api from '../../Services/api'
 
 export default function NewBook() {
 
+    const [id, setId] = useState('')
     const [author, setAuthor] = useState('')
     const [launchDate, setLaunchDate] = useState('')
     const [price, setPrice] = useState('')
     const [title, setTitle] = useState('')
 
-    const history = useNavigate()
+    const { bookId } = useParams();
+
+    const navigator = useNavigate()
     const accesToken = localStorage.getItem('acecessToken')
     const authorization = {
         Headers: {
@@ -24,7 +27,29 @@ export default function NewBook() {
     };
 
 
-    async function createNewBook(e) {
+    useEffect(() => { 
+        if (bookId === 0) return;
+        else loadBooks();
+    }, [bookId]);
+
+    async function loadBooks() {
+        try {
+            const responde = await api.get(`api/book/v1/${bookId}`, authorization);
+            let adjustDate = responde.data.launchDate.split("T", 10)[0]
+
+            setId(responde.data.id)
+            setTitle(responde.data.title)
+            setAuthor(responde.data.author)
+            setPrice(responde.data.price)
+            setLaunchDate(adjustDate)
+        } catch (error) {
+            alert('erro ao carregar os dados')
+            navigator('/books')
+        }
+    }
+
+
+    async function saveOrUpdate(e) {
         e.preventDefault();
 
         const data = {
@@ -34,12 +59,16 @@ export default function NewBook() {
             title
         };
         try {
-           await api.post('auth/book/v1', data, authorization);
-            navigator.push('/books')
+            if (bookId == 0) { 
+                await api.post('auth/book/v1', data, authorization);
+            } else {
+                data.id = bookId
+                await api.put('auth/book/v1', data, authorization);
+            }
         } catch (error) {
             alert('Login failed! try again')
         }
-        history.push('/books')
+        navigator('/books')
     }
 
     
@@ -48,14 +77,14 @@ export default function NewBook() {
             <div className='content'>
                 <section className='form'>
                     <img src={newBook} alt='note book' />
-                    <h1>ADD NEW BOOK</h1>
-                    <p>Cadastre as informações do livro e click em 'ADD'!</p>
+                    <h1>{bookId === '0'? 'ADD NEW': 'UPDATE'} BOOK</h1>
+                    <p>Cadastre as informações do livro e click em {bookId === '0'? `'ADD NEW'`: `'UPDATE'`}!</p>
                     <Link className='back-link' to="/Books">
                         <FiArrowLeft size={16} color='#670AA6'/>
                         HOME
                     </Link>
                 </section>
-                <form onSubmit={createNewBook}>
+                <form onSubmit={saveOrUpdate}>
                     <input
                         placeholder='Titulo'
                         value={title}
@@ -77,7 +106,7 @@ export default function NewBook() {
                         value={launchDate}
                         onChange={e => setLaunchDate(e.target.value) }
                     />
-                    <button className='button' type='submit'>ADD</button>
+                    <button className='button' type='submit'>{bookId === '0'? 'ADD NEW': 'UPDATE'}</button>
                 </form>
             </div>
         </div>

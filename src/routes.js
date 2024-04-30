@@ -11,7 +11,7 @@ export default function Rotas() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="//Books" element={<Books />} />
-                <Route path="//new" element={<NewBook />} />
+                <Route path="/book/new:bookId" element={<NewBook />} />
             </Routes>
         </BrowserRouter>
     )

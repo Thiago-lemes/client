@@ -13,7 +13,7 @@ export default function Login() {
     const [username, setUsername] = useState('')
     const [password, SetPassword] = useState('')
 
-    const history = useNavigate()
+    const navigator = useNavigate()
 
     async function login(e) {
         e.preventDefault();
@@ -28,7 +28,7 @@ export default function Login() {
             localStorage.setItem('acecessToken', response.data.accessToken)
             localStorage.setItem('refreshToken', response.data.refreshToken)            
 
-            navigator.push('/books')
+            navigator('/books')
         } catch (error) {
             alert('Login failed! try again')
             
